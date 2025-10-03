@@ -88,24 +88,135 @@
         transition: all 0.5s ease-out;
       }
       #logo-container.scrolled {
-        position: fixed;
-        top: 0.5rem;
-        left: 1rem;
-        width: auto;
         height: 2.5rem;
-        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: auto;
+        flex-shrink: 0;
+        margin: auto 0; /* Center vertically within the header */
       }
       #logo-container.scrolled #logo-svg {
         height: 100%;
         width: auto;
+        max-width: none;
+        flex-shrink: 0;
       }
-      #logo-container.scrolled #logo-text {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-left: 0.5rem;
+      /* Styles for when the header is over a dark background */
+      #sticky-header.inverted #logo-svg path {
+        fill: var(--background-light); /* Invert logo color */
       }
-      #sticky-header.scrolled #header-content {
-        justify-content: flex-end;
+      #sticky-header.inverted #header-cta {
+        color: var(--background-light);
+        border-color: var(--background-light); /* Make border visible */
+      }
+      #sticky-header.inverted #header-cta:hover {
+        background-color: rgba(249, 247, 255, 0.1);
+      }
+      .aurora-text {
+        background: linear-gradient(
+          90deg,
+          var(--primary-400),
+          var(--secondary-400),
+          var(--tertiary-400),
+          var(--primary-400)
+        );
+        background-size: 200% 200%;
+        color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: aurora-text-animation 5s ease infinite;
+      }
+      @keyframes aurora-text-animation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .device-mockup-container {
+        perspective: 1200px;
+        transform-style: preserve-3d;
+      }
+      .device-mockup {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 9 / 19.5;
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: device-rise-and-rotate var(--device-animation-duration, 22s)
+          ease-in-out infinite;
+        isolation: isolate;
+        will-change: transform;
+      }
+      .device-mockup:hover {
+        transform: translateY(-6px) rotateX(16deg) rotateY(-10deg) scale(1.04);
+        animation-play-state: paused;
+      }
+      .device-mockup-screen {
+        position: absolute;
+        inset: 3.2% 5.3% 2.6% 5.3%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        z-index: 1;
+      }
+      .device-mockup-video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+      .device-mockup-frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        z-index: 2;
+        filter: drop-shadow(0 28px 48px rgba(17, 14, 26, 0.3));
+      }
+      @keyframes device-rise-and-rotate {
+        0% {
+          transform: translateY(60px) rotateX(0deg) rotateY(0deg);
+          opacity: 0;
+        }
+        12% {
+          transform: translateY(0) rotateX(0deg) rotateY(0deg);
+          opacity: 1;
+        }
+        50% {
+          transform: translateY(0) rotateX(6deg) rotateY(-6deg);
+          opacity: 1;
+        }
+        88% {
+          transform: translateY(0) rotateX(-4deg) rotateY(4deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(60px) rotateX(0deg) rotateY(0deg);
+          opacity: 0;
+        }
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(calc(-100% - 0.75rem));
+        }
+      }
+      .animate-marquee {
+        animation: marquee var(--duration, 36s) linear infinite;
+      }
+      .group:hover .animate-marquee {
+        animation-play-state: paused;
       }
     </style>
     <script>
@@ -198,6 +309,18 @@
         background: rgba(17, 14, 26, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
+      @keyframes floatBackground {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      .float-animation {
+        animation: floatBackground 8s ease-in-out infinite;
+      }
     </style>
     <style>
       body {
@@ -210,34 +333,50 @@
   >
     <div class="relative w-full overflow-x-hidden">
       <header
-        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 hidden"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 hidden h-20 liquid-glass px-4 sm:px-6 lg:px-8 flex items-center"
         id="sticky-header"
       >
-        <div
-          class="liquid-glass p-4 flex justify-between items-center"
-          id="header-content"
-        >
-          <a
-            class="inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-bold text-primary-500 transition hover:bg-primary-500/10 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:text-primary-400 dark:hover:bg-primary-400/10 dark:focus:ring-primary-800"
-            href="#"
-          >
-            Start for Free
-          </a>
+        <!-- The logo container will be inserted here by JS -->
+        <div class="flex-1 flex items-center justify-start h-full">
+          <!-- Logo will be inserted here -->
         </div>
+        <a
+          id="header-cta"
+          class="inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-bold text-primary-500 transition hover:bg-primary-500/10 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:text-primary-400 dark:hover:bg-primary-400/10 dark:focus:ring-primary-800 border-2 border-transparent whitespace-nowrap flex-shrink-0"
+          href="#"
+        >
+          Start for Free
+        </a>
       </header>
       <main class="flex flex-col">
         <section
           class="relative @container px-4 pt-8 pb-12 sm:px-6 lg:px-8 overflow-hidden flex flex-col min-h-screen"
         >
-          <div class="absolute inset-0 z-0 opacity-20 dark:opacity-40">
+          <div class="absolute inset-0 z-0 pointer-events-none">
             <div
-              class="absolute top-[-20%] left-[-20%] w-96 h-96 bg-primary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"
+              class="absolute inset-0 bg-gradient-to-br from-primary-50 via-secondary-50 to-tertiary-50 dark:from-primary-950 dark:via-secondary-950 dark:to-tertiary-950"
+            ></div>
+            <div class="absolute inset-0 opacity-20 dark:opacity-40">
+              <div
+                class="absolute top-[-20%] left-[-20%] w-96 h-96 bg-primary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"
+              ></div>
+              <div
+                class="absolute bottom-[-20%] right-[-20%] w-96 h-96 bg-secondary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite_reverse]"
+              ></div>
+              <div
+                class="absolute top-[30%] left-[50%] w-80 h-80 bg-tertiary-300 rounded-full blur-3xl animate-[spin_30s_linear_infinite]"
+              ></div>
+            </div>
+            <div
+              class="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full opacity-20 float-animation"
             ></div>
             <div
-              class="absolute bottom-[-20%] right-[-20%] w-96 h-96 bg-secondary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite_reverse]"
+              class="absolute top-40 right-20 w-16 h-16 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-full opacity-20 float-animation"
+              style="animation-delay: -2s;"
             ></div>
             <div
-              class="absolute top-[30%] left-[50%] w-80 h-80 bg-tertiary-300 rounded-full blur-3xl animate-[spin_30s_linear_infinite]"
+              class="absolute bottom-20 left-1/4 w-12 h-12 bg-gradient-to-br from-tertiary-400 to-tertiary-600 rounded-full opacity-20 float-animation"
+              style="animation-delay: -4s;"
             ></div>
           </div>
           <div
@@ -245,16 +384,19 @@
           >
             <div
               class="flex items-center justify-center mb-6 w-full"
-              id="logo-container"
+              id="logo-container";
+        
             >
               <svg
-                class="h-16 text-primary-500 dark:text-primary-400"
+                class="h-24 text-primary-500 dark:text-primary-400"
                 id="logo-svg"
                 width="auto"
                 height="auto"
                 viewBox="0 0 65 43"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                
+
               >
                 <path
                   d="M63.8301 13.026V13.0092C63.2678 9.46747 61.4888 6.295 58.7027 4.07092C55.6649 1.6454 51.746 0.604699 47.8858 0.755769C46.5767 0.806125 45.3766 0.957195 44.2773 1.20898C42.4731 1.62022 40.8115 2.33361 39.2926 3.34074C37.2618 4.69198 35.7345 6.40411 34.5849 8.57784C32.9737 11.6076 32.5876 15.2417 33.0492 18.5736C33.3009 20.3529 33.838 22.0399 34.6772 23.6261C34.7611 23.6513 34.8198 23.71 34.8534 23.7939C35.08 24.3143 35.3317 24.7423 35.6003 25.078C35.8688 25.4054 36.0702 25.6571 36.2045 25.8334C36.7415 26.5552 37.2954 27.0336 38.0758 27.7469C38.1765 27.8393 38.2688 27.9148 38.3528 27.9652C38.6129 28.133 38.7472 28.2757 39.0409 28.4519C39.15 28.5191 39.2591 28.603 39.3765 28.7121C39.4101 28.7373 39.4437 28.7625 39.4772 28.7876C39.922 29.0394 40.3668 29.2912 40.8115 29.543C40.8535 29.5682 41.0045 29.6353 41.2815 29.7444C41.4577 29.8116 41.6087 29.9123 41.7262 30.0382H41.785C41.8102 30.0382 41.8353 30.0382 41.8605 30.055C43.5137 30.7096 45.192 31.0957 46.8955 31.2132C47.5921 31.2635 48.3641 31.2719 49.2201 31.2551C53.0886 31.1628 56.7978 29.7948 59.6174 27.1175C63.4357 23.4918 64.6525 18.1456 63.8301 13.026ZM56.7139 16.0054V16.2656C56.7139 16.4083 56.7139 16.5678 56.6971 16.7356C56.6719 17.491 56.5209 18.196 56.2691 18.859C55.1362 22.342 51.9893 24.8514 48.2886 24.8514C44.5878 24.8514 39.8549 20.89 39.8549 16.0054C39.8549 11.1208 43.6312 7.15946 48.2886 7.15946C52.946 7.15946 56.0258 10.4326 56.63 14.6962C56.6635 14.8892 56.6887 15.0906 56.7055 15.3004C56.7223 15.4767 56.7223 15.7033 56.7223 15.9887V16.0054H56.7139Z"
@@ -324,7 +466,7 @@
             </div>
             <div class="flex flex-col gap-4">
               <h1
-                class="text-5xl font-bold tracking-tighter text-slate-900 dark:text-white sm:text-6xl lg:text-7xl"
+                class="aurora-text text-5xl font-bold tracking-tighter text-slate-900 dark:text-white sm:text-6xl lg:text-7xl"
               >
                 Sell smarter, not harder.
               </h1>
@@ -337,7 +479,7 @@
               </p>
             </div>
             <a
-              class="inline-flex items-center justify-center rounded bg-primary-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800 shadow-lg shadow-primary-500/30"
+              class="inline-flex items-center justify-center rounded bg-primary-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800 shadow-lg shadow-primary-500/30 whitespace-nowrap"
               href="#"
               id="main-cta"
             >
@@ -345,89 +487,75 @@
             </a>
           </div>
           <div
-            class="relative w-full max-w-[280px] mx-auto mt-auto flex-shrink-0"
+            class="relative w-full max-w-[220px] sm:max-w-[260px] mx-auto mt-auto flex-shrink-0"
           >
-            <div
-              class="w-full h-auto rounded-3xl overflow-hidden shadow-2xl shadow-primary-500/20"
-            >
-              <video
-                autoplay=""
-                class="w-full h-full object-cover"
-                loop=""
-                muted=""
-                playsinline=""
-              >
-                <source
-                  src="https://storage.googleapis.com/aida-asset-storage/vendoo-demo-1.mp4"
-                  type="video/mp4"
-                />
-              </video>
-            </div>
-          </div>
-        </section>
-        <section class="py-24 sm:py-32 bg-background-dark text-white">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-16 lg:grid-cols-2 lg:gap-24 items-center">
-              <div class="text-center lg:text-left">
-                <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
-                  Snap a Photo and Let AI Do the Rest
-                </h2>
-                <p
-                  class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0"
-                >
-                  Our revolutionary AI technology instantly creates detailed and
-                  optimized listings from a single photo. Say goodbye to tedious
-                  typing and hello to effortless selling.
-                </p>
-                <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div class="flex items-start gap-4">
-                    <div
-                      class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center"
-                    >
-                      <span class="material-symbols-outlined"
-                        >auto_awesome</span
-                      >
-                    </div>
-                    <p class="text-slate-300">
-                      Intelligent Title &amp; Description Generation
-                    </p>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div
-                      class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-500/20 text-secondary-400 flex items-center justify-center"
-                    >
-                      <span class="material-symbols-outlined">sell</span>
-                    </div>
-                    <p class="text-slate-300">Accurate Pricing Suggestions</p>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div
-                      class="flex-shrink-0 w-8 h-8 rounded-full bg-tertiary-500/20 text-tertiary-400 flex items-center justify-center"
-                    >
-                      <span class="material-symbols-outlined">category</span>
-                    </div>
-                    <p class="text-slate-300">Automatic Categorization</p>
-                  </div>
-                  <div class="flex items-start gap-4">
-                    <div
-                      class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center"
-                    >
-                      <span class="material-symbols-outlined">palette</span>
-                    </div>
-                    <p class="text-slate-300">Color &amp; Style Detection</p>
-                  </div>
+            <div class="device-mockup-container">
+              <div class="device-mockup">
+                <div class="device-mockup-screen">
+                  <video
+                    class="device-mockup-video"
+                    src="https://8731369.fs1.hubspotusercontent-na1.net/hubfs/8731369/Vendoo%20Go/Final%20video%20oct%201.mp4"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                  ></video>
                 </div>
-              </div>
-              <div class="flex justify-center">
                 <img
-                  alt="AI listing creation process"
-                  class="rounded-2xl shadow-lg shadow-primary-900/50"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDh2fBHWrRVbOrmLVKYzjtj1D0Lep4vRb1PLPUe849VQ50WPHzJS26KvRQgvK_7dNjkbOhyDKNBIcIJLRVp8eK1jzy78czW3cGpDkImTCOnBloavTXh1Hx3UOmgEMgxs2TYma6evbvIjmQzlwhVAw85dOAnVBy63tY_ISCNhR4o3_-Mp20ScwzOF35RIHI0vluWDjzCzni11mwiHWbAja7t0y3qpFmm6rzSykiJTtPFuuviPTEZZBI5nbSMZsn6J4xBOMTTKpkpjb"
+                  src="assets/device-frame.png"
+                  alt="Vendoo Go product frame"
+                  class="device-mockup-frame"
+                  loading="lazy"
                 />
               </div>
             </div>
           </div>
         </section>
+        <section class="py-16 sm:py-20" id="logos">
+          <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+Build for sellers by sellers            </h3>
+            
+        </section>
+        <section class="py-24 sm:py-32">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid gap-16 lg:grid-cols-2 lg:gap-24 items-center">
+<div class="text-center lg:text-left">
+<h2 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Your Sales Supercharged</h2>
+<p class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0">One-tap listing, everywhere. Our AI handles the details, so you can focus on what you do best: selling.</p>
+</div>
+<div class="grid grid-cols-1 gap-8">
+<div class="flex items-start gap-6 p-6 glass-effect rounded-2xl animate-fade-in-up [animation-delay:200ms]">
+<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-primary-500 text-white shadow-md shadow-primary-500/40 shrink-0">
+<span class="material-symbols-outlined text-3xl">auto_awesome</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">AI Descriptions</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Instantly generate compelling, SEO-friendly listings that attract buyers.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 p-6 glass-effect rounded-2xl animate-fade-in-up [animation-delay:400ms]">
+<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-secondary-500 text-white shadow-md shadow-secondary-500/40 shrink-0">
+<span class="material-symbols-outlined text-3xl">content_copy</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Crosslist Magic</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Post to all your marketplaces with a single tap, adapting to each platform's format.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 p-6 glass-effect rounded-2xl animate-fade-in-up [animation-delay:600ms]">
+<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-tertiary-500 text-white shadow-md shadow-tertiary-500/40 shrink-0">
+<span class="material-symbols-outlined text-3xl">storefront</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Sales on the Go</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Manage your sales from all of the marketplaces in the palm of your hand</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
         <section class="py-24 sm:py-32">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
@@ -515,68 +643,24 @@
                 always wished we had. We understand the hustle, and we're
                 committed to your success.
               </p>
+              <div class="mt-10 flex justify-center">
+                <img
+                  src="https://8731369.fs1.hubspotusercontent-na1.net/hubfs/8731369/Vendoo%20Go/Merging%20icons.gif"
+                  alt="Animated illustration showing merging marketplace icons"
+                  class="w-40 sm:w-48 lg:w-56 h-auto max-w-full"
+                />
+              </div>
             </div>
-            <div class="mt-16 grid gap-8 md:grid-cols-2">
-              <div
-                class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-background-dark/50 transform hover:-translate-y-2 transition-transform duration-300 shadow-lg"
-              >
-                <div class="flex items-center gap-4">
-                  <img
-                    alt="User avatar"
-                    class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmzBA6WZojQqjspe_3LIHv63aRjdV1h4_8VAC9GjL9wmwr8DqKWze8YaitkQnwi_JdGcV3oHM3tlGJgoV47k9GbXsj1ivPB5DcbDE46tF9MQHOAuxPsYqpvlmLZKVYIzufq73v_vfTPTRztIFAtIOoiDDv9Z0mk57mfWl2PX9NoCWYONTfWMZ6ckNrkQcA_kY6DM-rLme9_88CRgM8jhQwKcQepbUoIh1iYmjax3Enb6eFbjU3iZY3A_5qdKnhRWytDIPeTXnplbeJ"
-                  />
-                  <div>
-                    <h3 class="font-bold text-slate-900 dark:text-white">
-                      Alex, Co-Founder
-                    </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">
-                      10+ Years Reselling
-                    </p>
-                  </div>
-                </div>
-                <p class="text-slate-600 dark:text-slate-300">
-                  "We created Vendoo Go to solve our own biggest pain point: the
-                  endless time spent on listing. It's truly a game-changer for
-                  anyone serious about reselling."
-                </p>
-              </div>
-              <div
-                class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-background-dark/50 transform hover:-translate-y-2 transition-transform duration-300 shadow-lg"
-              >
-                <div class="flex items-center gap-4">
-                  <img
-                    alt="User avatar"
-                    class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUjN-0KGEfj7gcP-dQIIsuFhX2TWL8Mg_xEglhuYd_4KOxq1XJkFD-XL4Ur2ZAdhNOdyPp28wfixZsYG7kIbSeOwzyOwnlma37M0ZzEnPpFYKs3jlOyTNCGPfnZ4GXPSouBIsK1O6M0zcbMILnbIK2ahZq0LMfHi26AzIRRG_sDZZgw8FR_Be2b5y_Z0qUMG7AvJ9I26HRWaQxGo2ElFviRp7RZ5oxQMYgPzPHinF2Oj35rA2YMlJFVXEMVU7v_vYdrp0Wn6bl8Ig0"
-                  />
-                  <div>
-                    <h3 class="font-bold text-slate-900 dark:text-white">
-                      Jordan, Head of Product
-                    </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">
-                      Side-Hustle Pro
-                    </p>
-                  </div>
-                </div>
-                <p class="text-slate-600 dark:text-slate-300">
-                  "Every feature is designed with a seller's workflow in mind.
-                  We're obsessed with creating the most intuitive and powerful
-                  reselling app on the market."
-                </p>
-              </div>
+            
             </div>
           </div>
+
+          
         </section>
         <section
           class="bg-gradient-to-br from-primary-500 to-secondary-500 py-24 sm:py-32"
         >
           <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-center mb-6">
-              <span class="material-symbols-outlined text-6xl text-white"
-                >outgoing_mail</span
-              >
-            </div>
             <h2
               class="text-4xl font-bold tracking-tight text-white sm:text-5xl"
             >
@@ -603,7 +687,7 @@
           </div>
         </section>
       </main>
-      <footer class="bg-background-dark text-slate-400">
+      <footer class="bg-background-dark text-slate-400 dark-section">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div class="flex flex-col items-center gap-8">
             <div class="flex justify-center space-x-6">
@@ -661,33 +745,96 @@
         const stickyHeader = document.getElementById("sticky-header");
         const logoContainer = document.getElementById("logo-container");
         const mainCta = document.getElementById("main-cta");
-        const headerContent = document.getElementById("header-content");
+        const originalLogoParent = logoContainer.parentElement;
+        const darkSections = document.querySelectorAll(".dark-section");
+        const deviceMockup = document.querySelector(".device-mockup");
+        const deviceVideo = document.querySelector(".device-mockup-video");
+
+        if (deviceMockup && deviceVideo) {
+          const syncAnimationDuration = () => {
+            const duration = deviceVideo.duration;
+            if (!Number.isFinite(duration) || duration <= 0) {
+              return;
+            }
+            const durationValue = `${duration}s`;
+            deviceMockup.style.setProperty(
+              "--device-animation-duration",
+              durationValue
+            );
+            deviceMockup.style.animationDuration = durationValue;
+          };
+
+          if (deviceVideo.readyState >= 1) {
+            syncAnimationDuration();
+          } else {
+            deviceVideo.addEventListener("loadedmetadata", syncAnimationDuration, {
+              once: true,
+            });
+          }
+
+          deviceVideo.addEventListener("durationchange", syncAnimationDuration);
+        }
+
+        function checkHeaderContrast() {
+          if (stickyHeader.classList.contains("hidden")) {
+            stickyHeader.classList.remove("inverted");
+            return;
+          }
+          const headerRect = stickyHeader.getBoundingClientRect();
+          let isOverDark = false;
+          darkSections.forEach((section) => {
+            const sectionRect = section.getBoundingClientRect();
+            if (
+              sectionRect.top < headerRect.bottom &&
+              sectionRect.bottom > headerRect.top
+            ) {
+              isOverDark = true;
+            }
+          });
+          if (isOverDark) {
+            stickyHeader.classList.add("inverted");
+          } else {
+            stickyHeader.classList.remove("inverted");
+          }
+        }
+
         const observer = new IntersectionObserver(
           ([e]) => {
             if (!e.isIntersecting) {
               stickyHeader.classList.remove("hidden");
               stickyHeader.classList.add("sticky-header", "scrolled");
               logoContainer.classList.add("scrolled");
-              headerContent.prepend(logoContainer);
+              // Insert logo into the left container
+              const leftContainer = stickyHeader.querySelector('.flex-1');
+              leftContainer.appendChild(logoContainer);
             } else {
               stickyHeader.classList.add("hidden");
-              stickyHeader.classList.remove("sticky-header", "scrolled");
+              stickyHeader.classList.remove(
+                "sticky-header",
+                "scrolled",
+                "inverted"
+              );
               logoContainer.classList.remove("scrolled");
-              const heroSection = document.querySelector("section");
-              const h1Element = heroSection.querySelector("h1");
-              h1Element.parentElement.parentElement.insertBefore(
+              originalLogoParent.insertBefore(
                 logoContainer,
-                h1Element.parentElement.parentElement.firstChild
+                originalLogoParent.firstChild
               );
             }
+            checkHeaderContrast();
           },
           {
             threshold: [0],
           }
         );
+
         if (mainCta) {
           observer.observe(mainCta);
         }
+
+        window.addEventListener("scroll", checkHeaderContrast, {
+          passive: true,
+        });
+        window.addEventListener("resize", checkHeaderContrast);
       });
     </script>
   </body>
