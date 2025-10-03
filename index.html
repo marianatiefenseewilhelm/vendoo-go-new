@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Vendoo Go - AI-Powered Crosslisting</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style type="text/tailwindcss">
+      :root {
+        --primary-50: #f4effd;
+        --primary-100: #e9dffb;
+        --primary-200: #d6c0f8;
+        --primary-300: #b996f2;
+        --primary-400: #9c67ea;
+        --primary-500: #6231d8;
+        --primary-600: #5729c4;
+        --primary-700: #4922a5;
+        --primary-800: #3c1c85;
+        --primary-900: #31176b;
+        --primary-950: #210f4a;
+        --secondary-50: #fef0f4;
+        --secondary-100: #fee2e9;
+        --secondary-200: #fcccd8;
+        --secondary-300: #f8a6ba;
+        --secondary-400: #f37797;
+        --secondary-500: #d8315f;
+        --secondary-600: #c42955;
+        --secondary-700: #a52347;
+        --secondary-800: #861d3a;
+        --secondary-900: #6d172e;
+        --secondary-950: #4a0c1c;
+        --tertiary-50: #effdfb;
+        --tertiary-100: #dffbf7;
+        --tertiary-200: #c1f6ef;
+        --tertiary-300: #96ede4;
+        --tertiary-400: #65e2d6;
+        --tertiary-500: #31d8c7;
+        --tertiary-600: #29c4b5;
+        --tertiary-700: #23a599;
+        --tertiary-800: #1d867d;
+        --tertiary-900: #176d66;
+        --tertiary-950: #0f4a44;
+        --background-light: #f9f7ff;
+        --background-dark: #110e1a;
+      }
+      @keyframes slide-down-fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(-100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .sticky-header {
+        animation: slide-down-fade-in 0.5s ease-out;
+      }
+      .liquid-glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+      }
+      .liquid-glass:hover {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      }
+      .dark .liquid-glass {
+        background: rgba(17, 14, 26, 0.25);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .dark .liquid-glass:hover {
+        background: rgba(17, 14, 26, 0.4);
+      }
+      #logo-container {
+        transition: all 0.5s ease-out;
+      }
+      #logo-container.scrolled {
+        position: fixed;
+        top: 0.5rem;
+        left: 1rem;
+        width: auto;
+        height: 2.5rem;
+        z-index: 60;
+      }
+      #logo-container.scrolled #logo-svg {
+        height: 100%;
+        width: auto;
+      }
+      #logo-container.scrolled #logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-left: 0.5rem;
+      }
+      #sticky-header.scrolled #header-content {
+        justify-content: flex-end;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "var(--primary-500)",
+                ...Object.fromEntries(
+                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
+                    (v) => [v, `var(--primary-${v})`]
+                  )
+                ),
+              },
+              secondary: {
+                DEFAULT: "var(--secondary-500)",
+                ...Object.fromEntries(
+                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
+                    (v) => [v, `var(--secondary-${v})`]
+                  )
+                ),
+              },
+              tertiary: {
+                DEFAULT: "var(--tertiary-500)",
+                ...Object.fromEntries(
+                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
+                    (v) => [v, `var(--tertiary-${v})`]
+                  )
+                ),
+              },
+              "background-light": "var(--background-light)",
+              "background-dark": "var(--background-dark)",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "5px",
+              lg: "0.75rem",
+              xl: "1rem",
+              "2xl": "1.5rem",
+              "3xl": "2rem",
+              full: "9999px",
+            },
+            boxShadow: {
+              "glow-primary": "0 0 20px 5px var(--primary-300)",
+              "glow-secondary": "0 0 20px 5px var(--secondary-300)",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": {
+                  transform: "translateY(0)",
+                },
+                "50%": {
+                  transform: "translateY(-20px)",
+                },
+              },
+              "fade-in-up": {
+                "0%": {
+                  opacity: "0",
+                  transform: "translateY(20px)",
+                },
+                "100%": {
+                  opacity: "1",
+                  transform: "translateY(0)",
+                },
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              "fade-in-up": "fade-in-up 1s ease-out forwards",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .dark .glass-effect {
+        background: rgba(17, 14, 26, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200"
+  >
+    <div class="relative w-full overflow-x-hidden">
+      <header
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 hidden"
+        id="sticky-header"
+      >
+        <div
+          class="liquid-glass p-4 flex justify-between items-center"
+          id="header-content"
+        >
+          <a
+            class="inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-bold text-primary-500 transition hover:bg-primary-500/10 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:text-primary-400 dark:hover:bg-primary-400/10 dark:focus:ring-primary-800"
+            href="#"
+          >
+            Start for Free
+          </a>
+        </div>
+      </header>
+      <main class="flex flex-col">
+        <section
+          class="relative @container px-4 pt-8 pb-12 sm:px-6 lg:px-8 overflow-hidden flex flex-col min-h-screen"
+        >
+          <div class="absolute inset-0 z-0 opacity-20 dark:opacity-40">
+            <div
+              class="absolute top-[-20%] left-[-20%] w-96 h-96 bg-primary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"
+            ></div>
+            <div
+              class="absolute bottom-[-20%] right-[-20%] w-96 h-96 bg-secondary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite_reverse]"
+            ></div>
+            <div
+              class="absolute top-[30%] left-[50%] w-80 h-80 bg-tertiary-300 rounded-full blur-3xl animate-[spin_30s_linear_infinite]"
+            ></div>
+          </div>
+          <div
+            class="relative z-10 flex flex-col items-center justify-center text-center gap-6 pt-10 pb-8 flex-grow"
+          >
+            <div
+              class="flex items-center justify-center mb-6 w-full"
+              id="logo-container"
+            >
+              <svg
+                class="h-16 text-primary-500 dark:text-primary-400"
+                id="logo-svg"
+                width="auto"
+                height="auto"
+                viewBox="0 0 65 43"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M63.8301 13.026V13.0092C63.2678 9.46747 61.4888 6.295 58.7027 4.07092C55.6649 1.6454 51.746 0.604699 47.8858 0.755769C46.5767 0.806125 45.3766 0.957195 44.2773 1.20898C42.4731 1.62022 40.8115 2.33361 39.2926 3.34074C37.2618 4.69198 35.7345 6.40411 34.5849 8.57784C32.9737 11.6076 32.5876 15.2417 33.0492 18.5736C33.3009 20.3529 33.838 22.0399 34.6772 23.6261C34.7611 23.6513 34.8198 23.71 34.8534 23.7939C35.08 24.3143 35.3317 24.7423 35.6003 25.078C35.8688 25.4054 36.0702 25.6571 36.2045 25.8334C36.7415 26.5552 37.2954 27.0336 38.0758 27.7469C38.1765 27.8393 38.2688 27.9148 38.3528 27.9652C38.6129 28.133 38.7472 28.2757 39.0409 28.4519C39.15 28.5191 39.2591 28.603 39.3765 28.7121C39.4101 28.7373 39.4437 28.7625 39.4772 28.7876C39.922 29.0394 40.3668 29.2912 40.8115 29.543C40.8535 29.5682 41.0045 29.6353 41.2815 29.7444C41.4577 29.8116 41.6087 29.9123 41.7262 30.0382H41.785C41.8102 30.0382 41.8353 30.0382 41.8605 30.055C43.5137 30.7096 45.192 31.0957 46.8955 31.2132C47.5921 31.2635 48.3641 31.2719 49.2201 31.2551C53.0886 31.1628 56.7978 29.7948 59.6174 27.1175C63.4357 23.4918 64.6525 18.1456 63.8301 13.026ZM56.7139 16.0054V16.2656C56.7139 16.4083 56.7139 16.5678 56.6971 16.7356C56.6719 17.491 56.5209 18.196 56.2691 18.859C55.1362 22.342 51.9893 24.8514 48.2886 24.8514C44.5878 24.8514 39.8549 20.89 39.8549 16.0054C39.8549 11.1208 43.6312 7.15946 48.2886 7.15946C52.946 7.15946 56.0258 10.4326 56.63 14.6962C56.6635 14.8892 56.6887 15.0906 56.7055 15.3004C56.7223 15.4767 56.7223 15.7033 56.7223 15.9887V16.0054H56.7139Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M37.8464 18.5802C37.452 14.3167 33.852 14.3671 33.852 14.3671H23.0015V20.2336H29.2281C29.0939 21.0813 28.8505 21.8031 28.4897 22.3989C28.1288 22.9948 27.6673 23.4816 27.1134 23.8509C26.5596 24.2286 25.9386 24.4971 25.2421 24.665C24.5455 24.8328 24.3357 24.9168 23.077 24.9168C21.8182 24.9168 20.7105 24.707 19.7539 24.2789C18.7972 23.8593 18 23.255 17.3538 22.4829C16.7077 21.7107 16.2209 20.7959 15.9021 19.7384C15.5748 18.6809 15.4153 17.657 15.4153 16.2974C15.4153 14.9378 15.6 13.6956 15.9776 12.5878C16.3468 11.4799 16.8671 10.5316 17.5217 9.74263C18.1762 8.95371 18.965 8.34943 19.8965 7.9214C20.828 7.49337 21.6336 7.28355 22.9931 7.28355C24.3525 7.28355 25.5693 7.62765 26.6435 8.32425C27.7092 9.02085 28.582 10.1707 29.2533 11.7653L36.445 8.78586C35.1023 6.02463 33.2813 3.99358 30.9904 2.67592C28.6911 1.35825 25.326 0.703613 22.9847 0.703613C20.6434 0.703613 18.5119 1.08129 16.607 1.82825C14.702 2.5752 13.0656 3.61591 11.7146 4.95875C10.3635 6.2932 9.31454 7.91301 8.58446 9.80978C8.50054 10.0196 8.42502 10.2378 8.35788 10.4476H11.3621C11.7146 10.4476 11.9999 10.733 11.9999 11.0855C11.9999 11.438 11.7146 11.7233 11.3621 11.7233H7.98864C7.88794 12.143 7.80403 12.571 7.7285 12.999H10.8922C11.2446 12.999 11.53 13.2844 11.53 13.6369C11.53 13.9894 11.2446 14.2747 10.8922 14.2747H7.56906C7.51871 14.8454 7.49353 15.4329 7.49353 16.0372C7.49353 16.6415 7.5271 17.3801 7.59423 18.0263H10.439C10.7915 18.0263 11.0768 18.3117 11.0768 18.6642C11.0768 19.0167 10.7915 19.302 10.439 19.302H7.77046C7.95508 20.3595 8.2404 21.3666 8.61803 22.3234C9.36489 24.2202 10.4055 25.8484 11.7481 27.1996C13.0908 28.5592 14.6936 29.6083 16.565 30.3553C18.4364 31.1022 21.1301 31.4799 22.7749 31.4799C24.4197 31.4799 25.9973 31.2701 27.491 30.8589C28.9848 30.4476 30.361 29.8517 31.6114 29.0628C32.8618 28.2823 33.9443 27.3003 34.8758 26.1253C35.8073 24.9503 36.5373 23.5991 37.0828 22.08C37.4688 20.9973 37.9723 19.8308 37.8548 18.5634L37.8464 18.5802Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M5.80696 9.1731H11.3539C11.7063 9.1731 11.9917 9.45845 11.9917 9.81095C11.9917 10.1634 11.7063 10.4488 11.3539 10.4488H5.80696C5.45451 10.4488 5.16919 10.1634 5.16919 9.81095C5.16919 9.45845 5.45451 9.1731 5.80696 9.1731Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M4.74886 11.7317H10.2958C10.6482 11.7317 10.9336 12.017 10.9336 12.3695C10.9336 12.722 10.6482 13.0074 10.2958 13.0074H4.74886C4.39641 13.0074 4.11108 12.722 4.11108 12.3695C4.11108 12.017 4.39641 11.7317 4.74886 11.7317Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M0.71248 9.1731H3.60763C3.96008 9.1731 4.2454 9.45845 4.2454 9.81095C4.2454 10.1634 3.96008 10.4488 3.60763 10.4488H0.71248C0.360027 10.4488 0.074707 10.1634 0.074707 9.81095C0.074707 9.45845 0.360027 9.1731 0.71248 9.1731Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M5.42147 18.4211H5.92497C6.27742 18.4211 6.56274 18.7065 6.56274 19.059C6.56274 19.4115 6.27742 19.6968 5.92497 19.6968H5.42147C5.06901 19.6968 4.78369 19.4115 4.78369 19.059C4.78369 18.7065 5.06901 18.4211 5.42147 18.4211Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  d="M46.1169 11.5757C46.2768 11.5757 46.4026 11.5332 46.5539 11.4677C47.2084 11.186 47.7076 10.6999 47.9283 10.0146C47.9428 9.96941 48.0011 9.9563 48.0384 9.9812C48.0528 9.99102 48.0672 10.0159 48.0803 10.0552C48.3332 10.7988 48.9425 11.3222 49.6814 11.5587C49.7004 11.5653 49.7155 11.579 49.7266 11.6013C49.7587 11.6668 49.6985 11.6989 49.6415 11.7186C49.439 11.7873 49.2235 11.8981 48.9929 12.0507C48.5369 12.3527 48.2271 12.7589 48.0633 13.2699C48.0489 13.3157 47.9847 13.3308 47.9493 13.2974C47.9388 13.2876 47.9277 13.2646 47.9159 13.2293C47.6735 12.5001 47.0636 11.9668 46.3548 11.7245C46.2906 11.7028 46.2113 11.6917 46.1163 11.6917C46.0213 11.6917 45.942 11.7028 45.8778 11.7245C45.169 11.9668 44.5591 12.5001 44.3167 13.2293C44.3049 13.2646 44.2938 13.2876 44.2833 13.2974C44.2473 13.3308 44.1837 13.3151 44.1693 13.2699C44.0055 12.7589 43.6956 12.3527 43.2397 12.0507C43.0097 11.8981 42.7936 11.788 42.5911 11.7186C42.5348 11.6996 42.4745 11.6668 42.506 11.6013C42.5171 11.579 42.5322 11.5646 42.5512 11.5587C43.2901 11.3222 43.9 10.7988 44.1523 10.0552C44.166 10.0153 44.1798 9.99102 44.1942 9.9812C44.2315 9.9563 44.2898 9.96941 44.3042 10.0146C44.525 10.6999 45.0242 11.186 45.6787 11.4677C45.83 11.5332 45.9558 11.5757 46.1156 11.5757H46.1169Z"
+                  fill="#15C7B4"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8.96274 35.6826L10.8127 39.9244C10.8127 39.9306 10.8253 39.9711 10.8506 40.0464C10.8758 40.1221 10.8948 40.1929 10.9076 40.2591C10.9202 40.1929 10.939 40.1221 10.9644 40.0464C10.9896 39.9711 11.0054 39.9306 11.0119 39.9244L12.8617 35.6826H14.0096C13.9842 35.7368 13.9243 35.8725 13.8294 36.0895C13.7345 36.3066 13.6161 36.5734 13.4737 36.89C13.3315 37.2066 13.1732 37.5593 12.9994 37.9483C12.8253 38.3371 12.6467 38.7321 12.4633 39.133C12.2798 39.5341 12.1012 39.9306 11.9274 40.3224C11.7533 40.7144 11.5953 41.0686 11.453 41.385C11.3108 41.7016 11.1905 41.9672 11.0925 42.181C10.9945 42.395 10.9328 42.5293 10.9076 42.5833C10.8822 42.5293 10.8222 42.395 10.7273 42.181C10.6323 41.9672 10.5139 41.7016 10.3715 41.385C10.2293 41.0686 10.0711 40.7144 9.8972 40.3224C9.72311 39.9306 9.54452 39.5341 9.36112 39.133C9.17772 38.7321 8.99912 38.3371 8.82519 37.9483C8.65111 37.5593 8.49326 37.2066 8.3509 36.89C8.20853 36.5734 8.09007 36.3066 7.99522 36.0895C7.90036 35.8725 7.84007 35.7368 7.81482 35.6826H8.96274Z"
+                  fill="#1B0F38"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M17.2894 42.2862V35.6826H21.7878V36.6881H18.4233V38.4635H21.4159V39.4963H18.4233V41.2534H21.9177V42.2862H17.2894Z"
+                  fill="#1B0F38"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M31.1771 35.6513V42.614C31.1331 42.5595 31.036 42.459 30.8854 42.3129C30.7348 42.167 30.5497 41.9923 30.33 41.7883C30.1104 41.5844 29.8674 41.3594 29.6008 41.1131C29.334 40.8665 29.0627 40.6172 28.7867 40.3646C28.5105 40.1124 28.2408 39.8644 27.9773 39.6209C27.7138 39.3776 27.4738 39.1542 27.2574 38.9502C27.0409 38.7464 26.8588 38.573 26.7116 38.43C26.564 38.2873 26.4684 38.1882 26.4245 38.1336C26.4181 38.1214 26.3931 38.0893 26.3492 38.0377C26.3052 37.9861 26.2676 37.9388 26.2363 37.8961L26.2645 38.1882V42.304H25.1163V35.3501C25.1602 35.4049 25.2576 35.5038 25.408 35.6467C25.5587 35.7897 25.7436 35.9615 25.9634 36.1624C26.1829 36.3631 26.426 36.5822 26.6927 36.8195C26.9593 37.0566 27.2306 37.2984 27.5068 37.5448C27.7827 37.7913 28.0526 38.0346 28.3161 38.275C28.5797 38.5153 28.8211 38.7343 29.0408 38.932C29.2605 39.1298 29.4439 39.2985 29.5914 39.4385C29.7387 39.5784 29.8345 39.6755 29.8785 39.7305L30.0573 39.986L30.0289 39.6755V35.6513H31.1771Z"
+                  fill="#1B0F38"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M36.3713 41.2701C36.7286 41.2701 37.0577 41.2215 37.3586 41.124C37.6596 41.0269 37.9196 40.8824 38.1391 40.6909C38.3585 40.4994 38.5294 40.2655 38.6518 39.9889C38.774 39.7122 38.8351 39.3915 38.8351 39.0268C38.8351 38.6134 38.7615 38.2624 38.6141 37.9736C38.4667 37.6849 38.2803 37.4508 38.0545 37.2714C37.8289 37.0923 37.5781 36.9615 37.3024 36.8793C37.0262 36.7972 36.763 36.7563 36.5122 36.7563H35.5907V41.2701H36.3713ZM34.4342 35.6792H36.2116C36.9012 35.6792 37.4859 35.7811 37.9655 35.9847C38.4452 36.1884 38.8354 36.4513 39.1364 36.7735C39.4373 37.0957 39.655 37.4619 39.7899 37.8723C39.9247 38.2827 39.9922 38.6915 39.9922 39.0987C39.9922 39.5973 39.8996 40.0457 39.7148 40.4438C39.5297 40.842 39.2804 41.181 38.9671 41.4605C38.6536 41.7403 38.2883 41.9546 37.8715 42.1032C37.4545 42.2525 37.014 42.3268 36.5501 42.3268H34.4342V35.6792Z"
+                  fill="#1B0F38"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M44.4524 38.9928C44.4524 39.3057 44.5133 39.5993 44.6351 39.8739C44.7571 40.1484 44.926 40.3873 45.1417 40.591C45.3572 40.7946 45.6073 40.9556 45.8919 41.0737C46.1763 41.1917 46.4842 41.2506 46.8156 41.2506C47.1343 41.2506 47.436 41.1917 47.7205 41.0737C48.0048 40.9556 48.2516 40.7946 48.4613 40.591C48.6707 40.3873 48.8362 40.1484 48.9582 39.8739C49.0802 39.5993 49.1411 39.3057 49.1411 38.9928C49.1411 38.6799 49.0786 38.3862 48.9536 38.1118C48.8285 37.8373 48.6597 37.5968 48.4472 37.3902C48.2345 37.1836 47.9861 37.0213 47.7017 36.9031C47.4171 36.7851 47.1123 36.7261 46.7873 36.7261C46.4623 36.7261 46.1575 36.7851 45.8731 36.9031C45.5886 37.0213 45.3416 37.1836 45.1324 37.3902C44.9227 37.5968 44.7571 37.8373 44.6351 38.1118C44.5133 38.3862 44.4524 38.6799 44.4524 38.9928ZM43.2997 38.9907C43.2997 38.5421 43.3917 38.1171 43.5762 37.7157C43.7605 37.3142 44.0106 36.963 44.3264 36.6619C44.642 36.361 45.011 36.1219 45.4328 35.9448C45.855 35.7677 46.3065 35.6792 46.7879 35.6792C47.263 35.6792 47.7131 35.7677 48.1382 35.9448C48.5634 36.1219 48.9353 36.361 49.2544 36.6619C49.5731 36.963 49.8246 37.3142 50.0091 37.7157C50.1934 38.1171 50.2857 38.5421 50.2857 38.9907C50.2857 39.4453 50.1934 39.8718 50.0091 40.2702C49.8246 40.6685 49.5731 41.0169 49.2544 41.3149C48.9353 41.6131 48.5634 41.8478 48.1382 42.019C47.7131 42.19 47.263 42.2756 46.7879 42.2756C46.3065 42.2756 45.855 42.19 45.4328 42.019C45.011 41.8478 44.642 41.6131 44.3264 41.3149C44.0106 41.0169 43.7605 40.6685 43.5762 40.2702C43.3917 39.8718 43.2997 39.4453 43.2997 38.9907Z"
+                  fill="#1B0F38"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M54.7013 38.9964C54.7013 39.3098 54.7623 39.6039 54.8843 39.879C55.0065 40.1539 55.1756 40.3932 55.3917 40.5973C55.6075 40.8012 55.858 40.9624 56.143 41.0807C56.4278 41.1989 56.7361 41.2579 57.0682 41.2579C57.3874 41.2579 57.6896 41.1989 57.9745 41.0807C58.2593 40.9624 58.5065 40.8012 58.7165 40.5973C58.9263 40.3932 59.0921 40.1539 59.2143 39.879C59.3363 39.6039 59.3973 39.3098 59.3973 38.9964C59.3973 38.683 59.3347 38.3889 59.2095 38.114C59.0843 37.8391 58.9151 37.5982 58.7023 37.3912C58.4894 37.1843 58.2406 37.0217 57.9557 36.9034C57.6707 36.7852 57.3654 36.7261 57.0399 36.7261C56.7143 36.7261 56.4092 36.7852 56.1243 36.9034C55.8393 37.0217 55.5919 37.1843 55.3822 37.3912C55.1723 37.5982 55.0065 37.8391 54.8843 38.114C54.7623 38.3889 54.7013 38.683 54.7013 38.9964ZM53.5486 38.996C53.5486 38.5467 53.6409 38.121 53.8256 37.7189C54.0101 37.3169 54.2608 36.9651 54.577 36.6635C54.8933 36.3621 55.2627 36.1226 55.6853 35.9452C56.108 35.7679 56.5603 35.6792 57.0425 35.6792C57.5182 35.6792 57.9691 35.7679 58.395 35.9452C58.8208 36.1226 59.1933 36.3621 59.5127 36.6635C59.8321 36.9651 60.0839 37.3169 60.2688 37.7189C60.4533 38.121 60.5458 38.5467 60.5458 38.996C60.5458 39.4513 60.4533 39.8785 60.2688 40.2775C60.0839 40.6765 59.8321 41.0255 59.5127 41.3239C59.1933 41.6226 58.8208 41.8577 58.395 42.0292C57.9691 42.2005 57.5182 42.2862 57.0425 42.2862C56.5603 42.2862 56.108 42.2005 55.6853 42.0292C55.2627 41.8577 54.8933 41.6226 54.577 41.3239C54.2608 41.0255 54.0101 40.6765 53.8256 40.2775C53.6409 39.8785 53.5486 39.4513 53.5486 38.996Z"
+                  fill="#1B0F38"
+                ></path>
+              </svg>
+            </div>
+            <div class="flex flex-col gap-4">
+              <h1
+                class="text-5xl font-bold tracking-tighter text-slate-900 dark:text-white sm:text-6xl lg:text-7xl"
+              >
+                Sell smarter, not harder.
+              </h1>
+              <p
+                class="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto"
+              >
+                Vendoo Go uses AI to create instant listings and sell your items
+                everywhere. Spend less time listing and more time doing what you
+                love.
+              </p>
+            </div>
+            <a
+              class="inline-flex items-center justify-center rounded bg-primary-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800 shadow-lg shadow-primary-500/30"
+              href="#"
+              id="main-cta"
+            >
+              Start for Free
+            </a>
+          </div>
+          <div
+            class="relative w-full max-w-[280px] mx-auto mt-auto flex-shrink-0"
+          >
+            <div
+              class="w-full h-auto rounded-3xl overflow-hidden shadow-2xl shadow-primary-500/20"
+            >
+              <video
+                autoplay=""
+                class="w-full h-full object-cover"
+                loop=""
+                muted=""
+                playsinline=""
+              >
+                <source
+                  src="https://storage.googleapis.com/aida-asset-storage/vendoo-demo-1.mp4"
+                  type="video/mp4"
+                />
+              </video>
+            </div>
+          </div>
+        </section>
+        <section class="py-24 sm:py-32 bg-background-dark text-white">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid gap-16 lg:grid-cols-2 lg:gap-24 items-center">
+              <div class="text-center lg:text-left">
+                <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
+                  Snap a Photo and Let AI Do the Rest
+                </h2>
+                <p
+                  class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0"
+                >
+                  Our revolutionary AI technology instantly creates detailed and
+                  optimized listings from a single photo. Say goodbye to tedious
+                  typing and hello to effortless selling.
+                </p>
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center"
+                    >
+                      <span class="material-symbols-outlined"
+                        >auto_awesome</span
+                      >
+                    </div>
+                    <p class="text-slate-300">
+                      Intelligent Title &amp; Description Generation
+                    </p>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-500/20 text-secondary-400 flex items-center justify-center"
+                    >
+                      <span class="material-symbols-outlined">sell</span>
+                    </div>
+                    <p class="text-slate-300">Accurate Pricing Suggestions</p>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="flex-shrink-0 w-8 h-8 rounded-full bg-tertiary-500/20 text-tertiary-400 flex items-center justify-center"
+                    >
+                      <span class="material-symbols-outlined">category</span>
+                    </div>
+                    <p class="text-slate-300">Automatic Categorization</p>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center"
+                    >
+                      <span class="material-symbols-outlined">palette</span>
+                    </div>
+                    <p class="text-slate-300">Color &amp; Style Detection</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <img
+                  alt="AI listing creation process"
+                  class="rounded-2xl shadow-lg shadow-primary-900/50"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDh2fBHWrRVbOrmLVKYzjtj1D0Lep4vRb1PLPUe849VQ50WPHzJS26KvRQgvK_7dNjkbOhyDKNBIcIJLRVp8eK1jzy78czW3cGpDkImTCOnBloavTXh1Hx3UOmgEMgxs2TYma6evbvIjmQzlwhVAw85dOAnVBy63tY_ISCNhR4o3_-Mp20ScwzOF35RIHI0vluWDjzCzni11mwiHWbAja7t0y3qpFmm6rzSykiJTtPFuuviPTEZZBI5nbSMZsn6J4xBOMTTKpkpjb"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="py-24 sm:py-32">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+              <h2
+                class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl"
+              >
+                You Already Have a Full-Time Life
+              </h2>
+              <p
+                class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto"
+              >
+                Vendoo Go empowers you to run your reselling business
+                efficiently, giving you back precious time for family, friends,
+                and personal passions. Less screen time, more life.
+              </p>
+            </div>
+            <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div
+                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up"
+              >
+                <div
+                  class="flex items-center justify-center h-20 w-20 rounded-full bg-primary-500/10 text-primary-500 dark:text-primary-400 mx-auto mb-6"
+                >
+                  <span class="material-symbols-outlined text-5xl">speed</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">
+                  List in Seconds
+                </h3>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">
+                  Create listings up to 10x faster. What used to take hours, now
+                  takes minutes.
+                </p>
+              </div>
+              <div
+                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up [animation-delay:200ms]"
+              >
+                <div
+                  class="flex items-center justify-center h-20 w-20 rounded-full bg-secondary-500/10 text-secondary-500 dark:text-secondary-400 mx-auto mb-6"
+                >
+                  <span class="material-symbols-outlined text-5xl"
+                    >inventory_2</span
+                  >
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">
+                  Manage Everything
+                </h3>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">
+                  One central hub for your inventory, listings, and sales across
+                  all marketplaces.
+                </p>
+              </div>
+              <div
+                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up [animation-delay:400ms] md:col-span-2 lg:col-span-1"
+              >
+                <div
+                  class="flex items-center justify-center h-20 w-20 rounded-full bg-tertiary-500/10 text-tertiary-500 dark:text-tertiary-400 mx-auto mb-6"
+                >
+                  <span class="material-symbols-outlined text-5xl"
+                    >auto_graph</span
+                  >
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">
+                  Grow Faster
+                </h3>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">
+                  Expand to new marketplaces effortlessly and watch your sales
+                  soar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="py-24 sm:py-32 bg-primary-50 dark:bg-primary-950/30">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+              <h2
+                class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl"
+              >
+                Vendoo Go, Built by Sellers, For Sellers
+              </h2>
+              <p
+                class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
+              >
+                We're a team of passionate resellers who built the tool we
+                always wished we had. We understand the hustle, and we're
+                committed to your success.
+              </p>
+            </div>
+            <div class="mt-16 grid gap-8 md:grid-cols-2">
+              <div
+                class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-background-dark/50 transform hover:-translate-y-2 transition-transform duration-300 shadow-lg"
+              >
+                <div class="flex items-center gap-4">
+                  <img
+                    alt="User avatar"
+                    class="h-12 w-12 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmzBA6WZojQqjspe_3LIHv63aRjdV1h4_8VAC9GjL9wmwr8DqKWze8YaitkQnwi_JdGcV3oHM3tlGJgoV47k9GbXsj1ivPB5DcbDE46tF9MQHOAuxPsYqpvlmLZKVYIzufq73v_vfTPTRztIFAtIOoiDDv9Z0mk57mfWl2PX9NoCWYONTfWMZ6ckNrkQcA_kY6DM-rLme9_88CRgM8jhQwKcQepbUoIh1iYmjax3Enb6eFbjU3iZY3A_5qdKnhRWytDIPeTXnplbeJ"
+                  />
+                  <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white">
+                      Alex, Co-Founder
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                      10+ Years Reselling
+                    </p>
+                  </div>
+                </div>
+                <p class="text-slate-600 dark:text-slate-300">
+                  "We created Vendoo Go to solve our own biggest pain point: the
+                  endless time spent on listing. It's truly a game-changer for
+                  anyone serious about reselling."
+                </p>
+              </div>
+              <div
+                class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-background-dark/50 transform hover:-translate-y-2 transition-transform duration-300 shadow-lg"
+              >
+                <div class="flex items-center gap-4">
+                  <img
+                    alt="User avatar"
+                    class="h-12 w-12 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUjN-0KGEfj7gcP-dQIIsuFhX2TWL8Mg_xEglhuYd_4KOxq1XJkFD-XL4Ur2ZAdhNOdyPp28wfixZsYG7kIbSeOwzyOwnlma37M0ZzEnPpFYKs3jlOyTNCGPfnZ4GXPSouBIsK1O6M0zcbMILnbIK2ahZq0LMfHi26AzIRRG_sDZZgw8FR_Be2b5y_Z0qUMG7AvJ9I26HRWaQxGo2ElFviRp7RZ5oxQMYgPzPHinF2Oj35rA2YMlJFVXEMVU7v_vYdrp0Wn6bl8Ig0"
+                  />
+                  <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white">
+                      Jordan, Head of Product
+                    </h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                      Side-Hustle Pro
+                    </p>
+                  </div>
+                </div>
+                <p class="text-slate-600 dark:text-slate-300">
+                  "Every feature is designed with a seller's workflow in mind.
+                  We're obsessed with creating the most intuitive and powerful
+                  reselling app on the market."
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section
+          class="bg-gradient-to-br from-primary-500 to-secondary-500 py-24 sm:py-32"
+        >
+          <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center mb-6">
+              <span class="material-symbols-outlined text-6xl text-white"
+                >outgoing_mail</span
+              >
+            </div>
+            <h2
+              class="text-4xl font-bold tracking-tight text-white sm:text-5xl"
+            >
+              Early Birds Get the Worm
+            </h2>
+            <p class="mt-4 text-lg text-primary-100 max-w-2xl mx-auto">
+              Join our waitlist to be the first to experience Vendoo Go. Get
+              exclusive early access, a special lifetime discount, and help
+              shape the future of reselling.
+            </p>
+            <form class="mt-8 flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                class="w-full px-5 py-4 rounded-md border-0 bg-white/20 text-white placeholder-primary-200 focus:ring-2 focus:ring-white"
+                placeholder="Enter your email"
+                type="email"
+              />
+              <button
+                class="inline-flex items-center justify-center rounded-md bg-white px-8 py-4 text-lg font-bold text-primary-500 shadow-lg transition hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 whitespace-nowrap"
+                type="submit"
+              >
+                Join Waitlist
+              </button>
+            </form>
+          </div>
+        </section>
+      </main>
+      <footer class="bg-background-dark text-slate-400">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col items-center gap-8">
+            <div class="flex justify-center space-x-6">
+              <a class="hover:text-white" href="#">Terms</a>
+              <a class="hover:text-white" href="#">Privacy</a>
+              <a class="hover:text-white" href="#">Contact</a>
+            </div>
+            <div class="flex justify-center space-x-6">
+              <a class="hover:text-white" href="#">
+                <svg
+                  aria-hidden="true"
+                  class="h-6 w-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+                  ></path>
+                </svg>
+              </a>
+              <a class="hover:text-white" href="#">
+                <svg
+                  class="h-6 w-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-1.62c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.28.058 1.688.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.065 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"
+                  ></path>
+                </svg>
+              </a>
+              <a class="hover:text-white" href="#">
+                <svg
+                  class="h-6 w-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.701V8.115l6.06 3.484-6.06 3.286z"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+            <p class="mt-4 text-center text-base">
+              © 2024 Vendoo Go. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const stickyHeader = document.getElementById("sticky-header");
+        const logoContainer = document.getElementById("logo-container");
+        const mainCta = document.getElementById("main-cta");
+        const headerContent = document.getElementById("header-content");
+        const observer = new IntersectionObserver(
+          ([e]) => {
+            if (!e.isIntersecting) {
+              stickyHeader.classList.remove("hidden");
+              stickyHeader.classList.add("sticky-header", "scrolled");
+              logoContainer.classList.add("scrolled");
+              headerContent.prepend(logoContainer);
+            } else {
+              stickyHeader.classList.add("hidden");
+              stickyHeader.classList.remove("sticky-header", "scrolled");
+              logoContainer.classList.remove("scrolled");
+              const heroSection = document.querySelector("section");
+              const h1Element = heroSection.querySelector("h1");
+              h1Element.parentElement.parentElement.insertBefore(
+                logoContainer,
+                h1Element.parentElement.parentElement.firstChild
+              );
+            }
+          },
+          {
+            threshold: [0],
+          }
+        );
+        if (mainCta) {
+          observer.observe(mainCta);
+        }
+      });
+    </script>
+  </body>
+</html>
