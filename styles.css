@@ -121,18 +121,20 @@
   }
 }
 .device-mockup-container {
-  perspective: auto;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
   transform-style: preserve-3d;
 }
 .device-mockup {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 19.5;
+  aspect-ratio: 385 / 776;
   transform-style: preserve-3d;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: device-rise-and-rotate var(--device-animation-duration, 24s)
     ease-in-out infinite;
   isolation: isolate;
+  transform-origin: center;
   will-change: transform;
 }
 .device-mockup:hover {
@@ -141,7 +143,7 @@
 }
 .device-mockup-screen {
   position: absolute;
-  inset: 3.2% 5.3% 2.6% 5.3%;
+  inset: 2.384% 5.974% 2.577% 5.714%;
   border-radius: 10px;
   overflow: hidden;
   background: #000;
@@ -166,23 +168,42 @@
 }
 @keyframes device-rise-and-rotate {
   0% {
-    transform: translateY(60px) rotateX(0deg) rotateY(0deg);
+    transform: translateY(64px) rotateX(18deg) rotateY(-14deg) rotateZ(6deg)
+      scale(0.98);
     opacity: 0;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
-  8% {
-    transform: translateY(0) rotateX(0deg) rotateY(0deg);
+  12% {
+    transform: translateY(-2px) rotateX(16deg) rotateY(-12deg) rotateZ(4deg)
+      scale(1);
     opacity: 1;
+  }
+  35% {
+    transform: translateY(-6px) rotateX(12deg) rotateY(-3deg) rotateZ(-2deg)
+      scale(1.01);
   }
   55% {
-    transform: translateY(0) rotateX(6deg) rotateY(-6deg);
-    opacity: 1;
+    transform: translateY(0) rotateX(6deg) rotateY(8deg) rotateZ(2deg)
+      scale(1);
   }
-  92% {
-    transform: translateY(0) rotateX(-4deg) rotateY(4deg);
+  75% {
+    transform: translateY(-4px) rotateX(-2deg) rotateY(4deg) rotateZ(-3deg)
+      scale(1.01);
+  }
+  88% {
+    transform: translateY(0) rotateX(-8deg) rotateY(-4deg) rotateZ(2deg)
+      scale(0.99);
     opacity: 1;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  96% {
+    transform: translateY(24px) rotateX(-6deg) rotateY(-2deg) rotateZ(2deg)
+      scale(0.985);
+    opacity: 0;
   }
   100% {
-    transform: translateY(60px) rotateX(0deg) rotateY(0deg);
+    transform: translateY(64px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)
+      scale(0.98);
     opacity: 0;
   }
 }
