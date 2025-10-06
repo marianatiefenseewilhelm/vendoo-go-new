@@ -14,8 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <style type="text/tailwindcss">
+    <style>
       :root {
         --primary-50: #f4effd;
         --primary-100: #e9dffb;
@@ -53,280 +52,105 @@
         --background-light: #f9f7ff;
         --background-dark: #110e1a;
       }
-      @keyframes slide-down-fade-in {
-        from {
-          opacity: 0;
-          transform: translateY(-100%);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .sticky-header {
-        animation: slide-down-fade-in 0.5s ease-out;
-      }
-      .liquid-glass {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        transition: background 0.3s ease, box-shadow 0.3s ease;
-      }
-      .liquid-glass:hover {
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      }
-      .dark .liquid-glass {
-        background: rgba(17, 14, 26, 0.25);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .dark .liquid-glass:hover {
-        background: rgba(17, 14, 26, 0.4);
-      }
-      #logo-container {
-        transition: all 0.5s ease-out;
-      }
-      #logo-container.scrolled {
-        height: 2.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        width: auto;
-        flex-shrink: 0;
-        margin: auto 0; /* Center vertically within the header */
-      }
-      #logo-container.scrolled #logo-svg {
-        height: 100%;
-        width: auto;
-        max-width: none;
-        flex-shrink: 0;
-      }
-      /* Styles for when the header is over a dark background */
-      #sticky-header.inverted #logo-svg path {
-        fill: var(--background-light); /* Invert logo color */
-      }
-      #sticky-header.inverted #header-cta {
-        color: var(--background-light);
-        border-color: var(--background-light); /* Make border visible */
-      }
-      #sticky-header.inverted #header-cta:hover {
-        background-color: rgba(249, 247, 255, 0.1);
-      }
-      .aurora-text {
-        background: linear-gradient(
-          90deg,
-          var(--primary-400),
-          var(--secondary-400),
-          var(--tertiary-400),
-          var(--primary-400)
-        );
-        background-size: 200% 200%;
-        color: transparent;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: aurora-text-animation 5s ease infinite;
-      }
-      @keyframes aurora-text-animation {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-      .device-mockup-container {
-        perspective: 1200px;
-        transform-style: preserve-3d;
-      }
-      .device-mockup {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 9 / 19.5;
-        transform-style: preserve-3d;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        animation: device-rise-and-rotate var(--device-animation-duration, 22s)
-          ease-in-out infinite;
-        isolation: isolate;
-        will-change: transform;
-      }
-      .device-mockup:hover {
-        transform: translateY(-6px) rotateX(16deg) rotateY(-10deg) scale(1.04);
-        animation-play-state: paused;
-      }
-      .device-mockup-screen {
-        position: absolute;
-        inset: 3.2% 5.3% 2.6% 5.3%;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #000;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-        z-index: 1;
-      }
-      .device-mockup-video {
-        width: 100%;
-        height: 100%;
-        display: block;
-        object-fit: cover;
-      }
-      .device-mockup-frame {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        pointer-events: none;
-        z-index: 2;
-        filter: drop-shadow(0 28px 48px rgba(17, 14, 26, 0.3));
-      }
-      @keyframes device-rise-and-rotate {
-        0% {
-          transform: translateY(60px) rotateX(0deg) rotateY(0deg);
-          opacity: 0;
-        }
-        12% {
-          transform: translateY(0) rotateX(0deg) rotateY(0deg);
-          opacity: 1;
-        }
-        50% {
-          transform: translateY(0) rotateX(6deg) rotateY(-6deg);
-          opacity: 1;
-        }
-        88% {
-          transform: translateY(0) rotateX(-4deg) rotateY(4deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(60px) rotateX(0deg) rotateY(0deg);
-          opacity: 0;
-        }
-      }
-      @keyframes marquee {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(calc(-100% - 0.75rem));
-        }
-      }
-      .animate-marquee {
-        animation: marquee var(--duration, 36s) linear infinite;
-      }
-      .group:hover .animate-marquee {
-        animation-play-state: paused;
-      }
     </style>
+    <link href="styles.css" rel="stylesheet" />
     <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                DEFAULT: "var(--primary-500)",
-                ...Object.fromEntries(
-                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
-                    (v) => [v, `var(--primary-${v})`]
-                  )
-                ),
-              },
-              secondary: {
-                DEFAULT: "var(--secondary-500)",
-                ...Object.fromEntries(
-                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
-                    (v) => [v, `var(--secondary-${v})`]
-                  )
-                ),
-              },
-              tertiary: {
-                DEFAULT: "var(--tertiary-500)",
-                ...Object.fromEntries(
-                  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
-                    (v) => [v, `var(--tertiary-${v})`]
-                  )
-                ),
-              },
-              "background-light": "var(--background-light)",
-              "background-dark": "var(--background-dark)",
-            },
-            fontFamily: {
-              display: ["Lexend", "sans-serif"],
-            },
-            borderRadius: {
-              DEFAULT: "5px",
-              lg: "0.75rem",
-              xl: "1rem",
-              "2xl": "1.5rem",
-              "3xl": "2rem",
-              full: "9999px",
-            },
-            boxShadow: {
-              "glow-primary": "0 0 20px 5px var(--primary-300)",
-              "glow-secondary": "0 0 20px 5px var(--secondary-300)",
-            },
-            keyframes: {
-              float: {
-                "0%, 100%": {
-                  transform: "translateY(0)",
+      (function applyTailwindConfigFallback() {
+        if (window.tailwind && window.tailwind.config) {
+          return;
+        }
+        const colorEntries = [
+          50,
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700,
+          800,
+          900,
+          950,
+        ].map((value) => [value, `var(--primary-${value})`]);
+        const secondaryEntries = colorEntries.map(([value]) => [
+          value,
+          `var(--secondary-${value})`,
+        ]);
+        const tertiaryEntries = colorEntries.map(([value]) => [
+          value,
+          `var(--tertiary-${value})`,
+        ]);
+        const primaryScale = Object.fromEntries(colorEntries);
+        const secondaryScale = Object.fromEntries(secondaryEntries);
+        const tertiaryScale = Object.fromEntries(tertiaryEntries);
+
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                primary: {
+                  DEFAULT: "var(--primary-500)",
+                  ...primaryScale,
                 },
-                "50%": {
-                  transform: "translateY(-20px)",
+                secondary: {
+                  DEFAULT: "var(--secondary-500)",
+                  ...secondaryScale,
+                },
+                tertiary: {
+                  DEFAULT: "var(--tertiary-500)",
+                  ...tertiaryScale,
+                },
+                "background-light": "var(--background-light)",
+                "background-dark": "var(--background-dark)",
+              },
+              fontFamily: {
+                display: ["Lexend", "sans-serif"],
+              },
+              borderRadius: {
+                DEFAULT: "5px",
+                lg: "0.75rem",
+                xl: "1rem",
+                "2xl": "1.5rem",
+                "3xl": "2rem",
+                full: "9999px",
+              },
+              boxShadow: {
+                "glow-primary": "0 0 20px 5px var(--primary-300)",
+                "glow-secondary": "0 0 20px 5px var(--secondary-300)",
+              },
+              keyframes: {
+                float: {
+                  "0%, 100%": {
+                    transform: "translateY(0)",
+                  },
+                  "50%": {
+                    transform: "translateY(-20px)",
+                  },
+                },
+                "fade-in-up": {
+                  "0%": {
+                    opacity: "0",
+                    transform: "translateY(20px)",
+                  },
+                  "100%": {
+                    opacity: "1",
+                    transform: "translateY(0)",
+                  },
                 },
               },
-              "fade-in-up": {
-                "0%": {
-                  opacity: "0",
-                  transform: "translateY(20px)",
-                },
-                "100%": {
-                  opacity: "1",
-                  transform: "translateY(0)",
-                },
+              animation: {
+                float: "float 6s ease-in-out infinite",
+                "fade-in-up": "fade-in-up 1s ease-out forwards",
               },
-            },
-            animation: {
-              float: "float 6s ease-in-out infinite",
-              "fade-in-up": "fade-in-up 1s ease-out forwards",
             },
           },
-        },
-      };
+        };
+      })();
     </script>
-    <style>
-      body {
-        min-height: max(884px, 100dvh);
-      }
-      .glass-effect {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .dark .glass-effect {
-        background: rgba(17, 14, 26, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      @keyframes floatBackground {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-      }
-      .float-animation {
-        animation: floatBackground 8s ease-in-out infinite;
-      }
-    </style>
-    <style>
-      body {
-        min-height: max(884px, 100dvh);
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="scripts/tailwind-config.js"></script>
   </head>
   <body
     class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200"
@@ -384,8 +208,7 @@
           >
             <div
               class="flex items-center justify-center mb-6 w-full"
-              id="logo-container";
-        
+              id="logo-container"
             >
               <svg
                 class="h-24 text-primary-500 dark:text-primary-400"
@@ -395,8 +218,6 @@
                 viewBox="0 0 65 43"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                
-
               >
                 <path
                   d="M63.8301 13.026V13.0092C63.2678 9.46747 61.4888 6.295 58.7027 4.07092C55.6649 1.6454 51.746 0.604699 47.8858 0.755769C46.5767 0.806125 45.3766 0.957195 44.2773 1.20898C42.4731 1.62022 40.8115 2.33361 39.2926 3.34074C37.2618 4.69198 35.7345 6.40411 34.5849 8.57784C32.9737 11.6076 32.5876 15.2417 33.0492 18.5736C33.3009 20.3529 33.838 22.0399 34.6772 23.6261C34.7611 23.6513 34.8198 23.71 34.8534 23.7939C35.08 24.3143 35.3317 24.7423 35.6003 25.078C35.8688 25.4054 36.0702 25.6571 36.2045 25.8334C36.7415 26.5552 37.2954 27.0336 38.0758 27.7469C38.1765 27.8393 38.2688 27.9148 38.3528 27.9652C38.6129 28.133 38.7472 28.2757 39.0409 28.4519C39.15 28.5191 39.2591 28.603 39.3765 28.7121C39.4101 28.7373 39.4437 28.7625 39.4772 28.7876C39.922 29.0394 40.3668 29.2912 40.8115 29.543C40.8535 29.5682 41.0045 29.6353 41.2815 29.7444C41.4577 29.8116 41.6087 29.9123 41.7262 30.0382H41.785C41.8102 30.0382 41.8353 30.0382 41.8605 30.055C43.5137 30.7096 45.192 31.0957 46.8955 31.2132C47.5921 31.2635 48.3641 31.2719 49.2201 31.2551C53.0886 31.1628 56.7978 29.7948 59.6174 27.1175C63.4357 23.4918 64.6525 18.1456 63.8301 13.026ZM56.7139 16.0054V16.2656C56.7139 16.4083 56.7139 16.5678 56.6971 16.7356C56.6719 17.491 56.5209 18.196 56.2691 18.859C55.1362 22.342 51.9893 24.8514 48.2886 24.8514C44.5878 24.8514 39.8549 20.89 39.8549 16.0054C39.8549 11.1208 43.6312 7.15946 48.2886 7.15946C52.946 7.15946 56.0258 10.4326 56.63 14.6962C56.6635 14.8892 56.6887 15.0906 56.7055 15.3004C56.7223 15.4767 56.7223 15.7033 56.7223 15.9887V16.0054H56.7139Z"
@@ -502,7 +323,7 @@
                   ></video>
                 </div>
                 <img
-                  src="assets/device-frame.png"
+                  src="https://8731369.fs1.hubspotusercontent-na1.net/hubfs/8731369/Vendoo%20Go/NEW%20device%20framne.png"
                   alt="Vendoo Go product frame"
                   class="device-mockup-frame"
                   loading="lazy"
@@ -740,102 +561,6 @@ Build for sellers by sellers            </h3>
         </div>
       </footer>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const stickyHeader = document.getElementById("sticky-header");
-        const logoContainer = document.getElementById("logo-container");
-        const mainCta = document.getElementById("main-cta");
-        const originalLogoParent = logoContainer.parentElement;
-        const darkSections = document.querySelectorAll(".dark-section");
-        const deviceMockup = document.querySelector(".device-mockup");
-        const deviceVideo = document.querySelector(".device-mockup-video");
-
-        if (deviceMockup && deviceVideo) {
-          const syncAnimationDuration = () => {
-            const duration = deviceVideo.duration;
-            if (!Number.isFinite(duration) || duration <= 0) {
-              return;
-            }
-            const durationValue = `${duration}s`;
-            deviceMockup.style.setProperty(
-              "--device-animation-duration",
-              durationValue
-            );
-            deviceMockup.style.animationDuration = durationValue;
-          };
-
-          if (deviceVideo.readyState >= 1) {
-            syncAnimationDuration();
-          } else {
-            deviceVideo.addEventListener("loadedmetadata", syncAnimationDuration, {
-              once: true,
-            });
-          }
-
-          deviceVideo.addEventListener("durationchange", syncAnimationDuration);
-        }
-
-        function checkHeaderContrast() {
-          if (stickyHeader.classList.contains("hidden")) {
-            stickyHeader.classList.remove("inverted");
-            return;
-          }
-          const headerRect = stickyHeader.getBoundingClientRect();
-          let isOverDark = false;
-          darkSections.forEach((section) => {
-            const sectionRect = section.getBoundingClientRect();
-            if (
-              sectionRect.top < headerRect.bottom &&
-              sectionRect.bottom > headerRect.top
-            ) {
-              isOverDark = true;
-            }
-          });
-          if (isOverDark) {
-            stickyHeader.classList.add("inverted");
-          } else {
-            stickyHeader.classList.remove("inverted");
-          }
-        }
-
-        const observer = new IntersectionObserver(
-          ([e]) => {
-            if (!e.isIntersecting) {
-              stickyHeader.classList.remove("hidden");
-              stickyHeader.classList.add("sticky-header", "scrolled");
-              logoContainer.classList.add("scrolled");
-              // Insert logo into the left container
-              const leftContainer = stickyHeader.querySelector('.flex-1');
-              leftContainer.appendChild(logoContainer);
-            } else {
-              stickyHeader.classList.add("hidden");
-              stickyHeader.classList.remove(
-                "sticky-header",
-                "scrolled",
-                "inverted"
-              );
-              logoContainer.classList.remove("scrolled");
-              originalLogoParent.insertBefore(
-                logoContainer,
-                originalLogoParent.firstChild
-              );
-            }
-            checkHeaderContrast();
-          },
-          {
-            threshold: [0],
-          }
-        );
-
-        if (mainCta) {
-          observer.observe(mainCta);
-        }
-
-        window.addEventListener("scroll", checkHeaderContrast, {
-          passive: true,
-        });
-        window.addEventListener("resize", checkHeaderContrast);
-      });
-    </script>
+    <script defer src="scripts/main.js"></script>
   </body>
 </html>
