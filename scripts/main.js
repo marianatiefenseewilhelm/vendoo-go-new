@@ -25,12 +25,15 @@ function initStickyHeader() {
 
   if (deviceMockup && deviceVideo) {
     const MINIMUM_LOOP_DURATION = 24;
+    const LOOP_DURATION_MULTIPLIER = 1.08;
+    const LOOP_DURATION_PADDING = 2;
     const syncAnimationDuration = () => {
       const duration = deviceVideo.duration;
       if (!Number.isFinite(duration) || duration <= 0) {
         return;
       }
-      const animationSeconds = Math.max(duration, MINIMUM_LOOP_DURATION);
+      const paddedDuration = duration * LOOP_DURATION_MULTIPLIER + LOOP_DURATION_PADDING;
+      const animationSeconds = Math.max(paddedDuration, MINIMUM_LOOP_DURATION);
       const durationValue = `${animationSeconds}s`;
       deviceMockup.style.setProperty(
         "--device-animation-duration",
@@ -48,6 +51,32 @@ function initStickyHeader() {
     }
 
     deviceVideo.addEventListener("durationchange", syncAnimationDuration);
+    let previousTime = 0;
+    const restartAnimation = () => {
+      deviceMockup.style.animation = "none";
+      void deviceMockup.offsetWidth;
+      const computedStyles = getComputedStyle(deviceMockup);
+      const durationFromVar = computedStyles
+        .getPropertyValue("--device-animation-duration")
+        .trim();
+      const durationValue =
+        durationFromVar || deviceMockup.style.animationDuration || "24s";
+      deviceMockup.style.animation = `device-rise-and-rotate ${durationValue} ease-in-out infinite`;
+      deviceMockup.style.animationDuration = durationValue;
+    };
+
+    deviceVideo.addEventListener("timeupdate", () => {
+      const currentTime = deviceVideo.currentTime;
+      if (currentTime < previousTime) {
+        restartAnimation();
+      }
+      previousTime = currentTime;
+    });
+
+    deviceVideo.addEventListener("play", () => {
+      previousTime = deviceVideo.currentTime;
+      restartAnimation();
+    });
   }
 
   function checkHeaderContrast() {
