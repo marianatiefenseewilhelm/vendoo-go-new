@@ -448,7 +448,7 @@ Build for sellers by sellers            </h3>
             </div>
             <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3" data-aos="fade-up" data-aos-delay="150">
               <div
-                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up"
+                class="text-center p-8 rounded-2xl animate-fade-in-up"
               >
                 <div
                   class="flex items-center justify-center h-20 w-20 rounded-full bg-primary-500/10 text-primary-500 dark:text-primary-400 mx-auto mb-6"
@@ -464,7 +464,7 @@ Build for sellers by sellers            </h3>
                 </p>
               </div>
               <div
-                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up [animation-delay:200ms]"
+                class="text-center p-8 rounded-2xl animate-fade-in-up [animation-delay:200ms]"
               >
                 <div
                   class="flex items-center justify-center h-20 w-20 rounded-full bg-secondary-500/10 text-secondary-500 dark:text-secondary-400 mx-auto mb-6"
@@ -482,7 +482,7 @@ Build for sellers by sellers            </h3>
                 </p>
               </div>
               <div
-                class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up [animation-delay:400ms] md:col-span-2 lg:col-span-1"
+                class="text-center p-8 rounded-2xl animate-fade-in-up [animation-delay:400ms] md:col-span-2 lg:col-span-1"
               >
                 <div
                   class="flex items-center justify-center h-20 w-20 rounded-full bg-tertiary-500/10 text-tertiary-500 dark:text-tertiary-400 mx-auto mb-6"
@@ -663,9 +663,11 @@ Build for sellers by sellers            </h3>
         const updateParallax = () => {
           const viewportCenter = window.scrollY + window.innerHeight / 2;
           parallaxItems.forEach((item) => {
-            const offset =
+            const rawOffset =
               (viewportCenter - item.baseY) * item.speed - item.initialOffset;
-            item.element.style.transform = `translate3d(0, ${offset}px, 0)`;
+            const offset = Math.round(rawOffset);
+            const clampedOffset = Math.max(Math.min(offset, 0), -80);
+            item.element.style.transform = `translate3d(0, ${clampedOffset}px, 0)`;
           });
           ticking = false;
         };
