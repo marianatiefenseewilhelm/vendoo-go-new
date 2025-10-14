@@ -248,6 +248,16 @@ body {
   animation: floatBackground 8s ease-in-out infinite;
 }
 
+[data-parallax] {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] {
+    transform: none !important;
+  }
+}
+
 .bento-grid {
   display: grid;
   gap: 1.5rem;
