@@ -14,6 +14,10 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
+    <link
+      href="https://unpkg.com/aos@next/dist/aos.css"
+      rel="stylesheet"
+    />
     <style>
       :root {
         --primary-50: #f4effd;
@@ -176,11 +180,19 @@
         <section
           class="relative @container px-4 pt-8 pb-12 sm:px-6 lg:px-8 overflow-hidden flex flex-col min-h-screen"
         >
-          <div class="absolute inset-0 z-0 pointer-events-none">
+          <div
+            class="absolute inset-0 z-0 pointer-events-none"
+            data-parallax
+            data-parallax-speed="0.2"
+          >
             <div
               class="absolute inset-0 bg-gradient-to-br from-primary-50 via-secondary-50 to-tertiary-50 dark:from-primary-950 dark:via-secondary-950 dark:to-tertiary-950"
             ></div>
-            <div class="absolute inset-0 opacity-20 dark:opacity-40">
+            <div
+              class="absolute inset-0 opacity-20 dark:opacity-40"
+              data-parallax
+              data-parallax-speed="0.35"
+            >
               <div
                 class="absolute top-[-20%] left-[-20%] w-96 h-96 bg-primary-300 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"
               ></div>
@@ -205,10 +217,16 @@
           </div>
           <div
             class="relative z-10 flex flex-col items-center justify-center text-center gap-6 pt-10 pb-8 flex-grow"
+            data-aos="fade-up"
+            data-aos-delay="200"
+            data-parallax
+            data-parallax-speed="0.08"
           >
             <div
               class="flex items-center justify-center mb-6 w-full"
               id="logo-container"
+              data-aos="zoom-out"
+              data-aos-delay="100"
             >
               <svg
                 class="h-24 text-primary-500 dark:text-primary-400"
@@ -339,13 +357,13 @@ Build for sellers by sellers            </h3>
             
         </section>
         <section class="py-24 sm:py-32">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
 <div class="grid gap-16 lg:grid-cols-2 lg:gap-24 items-center">
-<div class="text-center lg:text-left">
+<div class="text-center lg:text-left" data-parallax data-parallax-speed="0.06">
 <h2 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Your Sales Supercharged</h2>
 <p class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0">One-tap listing, everywhere. Our AI handles the details, so you can focus on what you do best: selling.</p>
 </div>
-<div class="bento-grid">
+<div class="bento-grid" data-aos="fade-up" data-aos-delay="150">
   <article class="bento-card bento-card--spotlight animate-fade-in-up [animation-delay:200ms]">
     <div class="bento-icon bento-icon--primary">
       <span class="material-symbols-outlined text-3xl">auto_awesome</span>
@@ -413,8 +431,8 @@ Build for sellers by sellers            </h3>
 </div>
 </section>
         <section class="py-24 sm:py-32">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+            <div class="text-center" data-parallax data-parallax-speed="0.05">
               <h2
                 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl"
               >
@@ -428,7 +446,7 @@ Build for sellers by sellers            </h3>
                 and personal passions. Less screen time, more life.
               </p>
             </div>
-            <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3" data-aos="fade-up" data-aos-delay="150">
               <div
                 class="text-center p-8 glass-effect rounded-2xl animate-fade-in-up"
               >
@@ -485,8 +503,8 @@ Build for sellers by sellers            </h3>
           </div>
         </section>
         <section class="py-24 sm:py-32 bg-primary-50 dark:bg-primary-950/30">
-          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+            <div class="text-center" data-parallax data-parallax-speed="0.04">
               <h2
                 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl"
               >
@@ -499,7 +517,7 @@ Build for sellers by sellers            </h3>
                 always wished we had. We understand the hustle, and we're
                 committed to your success.
               </p>
-              <div class="mt-10 flex justify-center">
+              <div class="mt-10 flex justify-center" data-aos="zoom-in" data-aos-delay="200">
                 <img
                   src="https://8731369.fs1.hubspotusercontent-na1.net/hubfs/8731369/Vendoo%20Go/Merging%20icons.gif"
                   alt="Animated illustration showing merging marketplace icons"
@@ -597,6 +615,119 @@ Build for sellers by sellers            </h3>
            
         </div>
     </div>
+    <script
+      src="https://unpkg.com/aos@next/dist/aos.js"
+      defer
+    ></script>
+    <script defer>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.AOS) {
+          window.AOS.init({
+            duration: 800,
+            easing: "ease-in-out",
+            once: true,
+            mirror: false,
+          });
+        }
+
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        );
+        const parallaxTargets = Array.from(
+          document.querySelectorAll("[data-parallax]")
+        );
+
+        if (!parallaxTargets.length) {
+          return;
+        }
+
+        const parallaxItems = parallaxTargets.map((element) => ({
+          element,
+          speed: parseFloat(element.dataset.parallaxSpeed || "0.2"),
+          baseY: 0,
+          initialOffset: 0,
+        }));
+
+        const recalcBase = () => {
+          const viewportCenter = window.scrollY + window.innerHeight / 2;
+          parallaxItems.forEach((item) => {
+            const rect = item.element.getBoundingClientRect();
+            item.baseY = window.scrollY + rect.top;
+            item.initialOffset =
+              (viewportCenter - item.baseY) * item.speed;
+          });
+        };
+
+        let ticking = false;
+
+        const updateParallax = () => {
+          const viewportCenter = window.scrollY + window.innerHeight / 2;
+          parallaxItems.forEach((item) => {
+            const offset =
+              (viewportCenter - item.baseY) * item.speed - item.initialOffset;
+            item.element.style.transform = `translate3d(0, ${offset}px, 0)`;
+          });
+          ticking = false;
+        };
+
+        const requestTick = () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+          }
+        };
+
+        const handleResize = () => {
+          recalcBase();
+          updateParallax();
+        };
+
+        let parallaxActive = false;
+
+        const enableParallax = () => {
+          if (parallaxActive) {
+            return;
+          }
+          recalcBase();
+          updateParallax();
+          window.addEventListener("scroll", requestTick, { passive: true });
+          window.addEventListener("resize", handleResize);
+          parallaxActive = true;
+        };
+
+        const disableParallax = () => {
+          if (parallaxActive) {
+            window.removeEventListener("scroll", requestTick);
+            window.removeEventListener("resize", handleResize);
+            parallaxActive = false;
+          }
+          ticking = false;
+          parallaxTargets.forEach((element) => {
+            element.style.transform = "none";
+          });
+        };
+
+        if (prefersReducedMotion.matches) {
+          disableParallax();
+        } else {
+          enableParallax();
+        }
+
+        const handleMotionChange = (event) => {
+          if (event.matches) {
+            disableParallax();
+          } else {
+            enableParallax();
+          }
+        };
+
+        if (typeof prefersReducedMotion.addEventListener === "function") {
+          prefersReducedMotion.addEventListener("change", handleMotionChange);
+        } else if (typeof prefersReducedMotion.addListener === "function") {
+          prefersReducedMotion.addListener(handleMotionChange);
+        }
+      });
+    </script>
     <script defer src="scripts/main.js"></script>
   </body>
 </html>
